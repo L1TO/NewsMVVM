@@ -7,19 +7,26 @@ import android.os.Looper
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.newsmvvm.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
-
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(R.layout.fragment_splash)
-        Handler(Looper.myLooper()!!).postDelayed({
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(2000)
             setContentView(binding.root)
-            botom_menu.setupWithNavController(
+            bottom_menu.setupWithNavController(
                 navController = fragment_container.findNavController()
             )
-        },2000)
+        }
     }
 }
