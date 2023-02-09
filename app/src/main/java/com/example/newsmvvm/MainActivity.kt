@@ -14,19 +14,24 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.Dispatcher
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(R.layout.fragment_splash)
-        CoroutineScope(Dispatchers.Main).launch {
-            delay(2000)
+        if (savedInstanceState == null) {
+            setContentView(R.layout.fragment_splash)
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(2000)
+                setContentView(binding.root)
+                bottom_menu.setupWithNavController(
+                    navController = fragment_container.findNavController()
+                )
+            }
+        } else {
             setContentView(binding.root)
-            bottom_menu.setupWithNavController(
-                navController = fragment_container.findNavController()
-            )
         }
     }
 }
