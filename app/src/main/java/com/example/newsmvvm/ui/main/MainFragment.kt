@@ -5,11 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.example.newsmvvm.R
 import com.example.newsmvvm.databinding.FragmentDetailsBinding
 import com.example.newsmvvm.databinding.FragmentMainBinding
+import com.example.newsmvvm.models.Article
+import com.example.newsmvvm.ui.adapters.ArticleActionListener
 import com.example.newsmvvm.ui.adapters.NewsAdapter
 import com.example.newsmvvm.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,7 +56,24 @@ class MainFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        adapter = NewsAdapter()
+        adapter = NewsAdapter(object : ArticleActionListener {
+            override fun onArticleDetails(article: Article) {
+                val bundle = bundleOf("article" to article)
+                findNavController().navigate(
+                    R.id.action_mainFragment_to_detailsFragment,
+                    bundle
+                )
+            }
+
+            override fun onArticleFavorite(article: Article) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onArticleShare(article: Article) {
+                TODO("Not yet implemented")
+            }
+
+        })
         mBinding.recyclerView.adapter = adapter
     }
 
