@@ -4,18 +4,19 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.newsmvvm.R
 import com.example.newsmvvm.databinding.ItemArticleLayoutBinding
 import com.example.newsmvvm.models.Article
+import kotlinx.android.synthetic.main.item_article_layout.*
+import kotlinx.coroutines.withContext
 import java.util.logging.Handler
 
 interface ArticleActionListener {
     fun onArticleDetails(article: Article)
-
-    fun onArticleFavorite(article: Article)
 
     fun onArticleShare(article: Article)
 }
@@ -43,7 +44,7 @@ class NewsDiffCallback(
 
 class NewsAdapter(
     private val articleActionListener: ArticleActionListener
-    ) : RecyclerView.Adapter<NewsAdapter.ViewHolder>(), View.OnClickListener {
+) : RecyclerView.Adapter<NewsAdapter.ViewHolder>(), View.OnClickListener {
 
     private var count = 0
 
@@ -62,26 +63,12 @@ class NewsAdapter(
     override fun onClick(view: View) {
         val article = view.tag as Article
 
-        when(view.id){
-            R.id.iv_like -> {
-                articleActionListener.onArticleFavorite(article)
-
-            }
+        when (view.id) {
             R.id.iv_share -> {
                 articleActionListener.onArticleShare(article)
             }
             else -> {
-                count++
-                android.os.Handler(Looper.myLooper()!!).postDelayed({
-                        if (count == 1){
-                            articleActionListener.onArticleDetails(article)
-                        }
-                    if (count == 2){
-                        articleActionListener.onArticleFavorite(article)
-                    }
-                    count = 0
-                }, 500)
-
+                articleActionListener.onArticleDetails(article)
             }
         }
     }
@@ -91,7 +78,6 @@ class NewsAdapter(
         val binding = ItemArticleLayoutBinding.inflate(inflater, parent, false)
 
         binding.root.setOnClickListener(this)
-        binding.ivLike.setOnClickListener(this)
         binding.ivShare.setOnClickListener(this)
 
         return ViewHolder(binding)
@@ -103,17 +89,14 @@ class NewsAdapter(
         val article = articles[position]
         with(holder.binding) {
             holder.itemView.tag = article
-            ivLike.tag = article
             ivShare.tag = article
             Glide.with(root)
                 .load(article.urlToImage)
                 .placeholder(R.drawable.no_image)
-                .error(R.drawable.no_image)
                 .into(ivArticleImage)
-            tvArticleSource.text = article.source?.name
             tvArticleTitle.text = article.title
             tvArticleDate.text = article.publishedAt?.substring(0, 10)
+            tvArticleAuthor.text = article.author
         }
-
     }
 }

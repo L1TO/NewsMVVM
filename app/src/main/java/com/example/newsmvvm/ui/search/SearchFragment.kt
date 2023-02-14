@@ -1,7 +1,7 @@
 package com.example.newsmvvm.ui.search
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.room.util.query
 import com.example.newsmvvm.R
 import com.example.newsmvvm.databinding.FragmentSearchBinding
 import com.example.newsmvvm.models.Article
+import com.example.newsmvvm.ui.ArticleViewModel
 import com.example.newsmvvm.ui.adapters.ArticleActionListener
 import com.example.newsmvvm.ui.adapters.NewsAdapter
 import com.example.newsmvvm.utils.Resource
@@ -29,7 +29,7 @@ class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val mBinding get() = _binding!!
-    private val viewModel by viewModels<SearchViewModel>()
+    private val viewModel by viewModels<ArticleViewModel>()
     private lateinit var adapter: NewsAdapter
 
     override fun onCreateView(
@@ -44,7 +44,7 @@ class SearchFragment : Fragment() {
         var job: Job? = null
         job?.cancel()
         job = MainScope().launch {
-            delay(2000)
+            delay(500)
             newText.toString().let {
                 if (it.isNotEmpty()){
                     viewModel.getSearchNews(it)
@@ -90,17 +90,18 @@ class SearchFragment : Fragment() {
             override fun onArticleDetails(article: Article) {
                 val bundle = bundleOf("article" to article)
                 findNavController().navigate(
-                    R.id.action_mainFragment_to_detailsFragment,
+                    R.id.action_searchFragment_to_detailsFragment,
                     bundle
                 )
             }
 
-            override fun onArticleFavorite(article: Article) {
-                TODO("Not yet implemented")
-            }
-
             override fun onArticleShare(article: Article) {
-                TODO("Not yet implemented")
+                println("article.url")
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = "text/plain"
+                intent.putExtra(Intent.EXTRA_TEXT, article.url)
+                val chooser = Intent.createChooser(intent, "Share link with your friends")
+                startActivity(chooser)
             }
 
         })

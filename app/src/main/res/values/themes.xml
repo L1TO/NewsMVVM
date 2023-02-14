@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <style name="image_background_16" parent="ShapeAppearance.MaterialComponents.MediumComponent" >

@@ -10,4 +10,6 @@
     <string name="Search_view_hint">Type your keyword here</string>
     <string name="description">Description</string>
     <string name="btn_visit_site_text">Visit site</string>
+    <string name="unated_states">US</string>
+    <string name="ukrainian">UA</string>
 </resources>
